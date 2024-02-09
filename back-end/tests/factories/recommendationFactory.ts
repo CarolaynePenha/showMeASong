@@ -28,7 +28,7 @@ async function createRecomendations() {
       youtubeLink: "https://www.youtube.com/watch?v=1go53lCwNxQ",
     },
   ];
-  await prisma.recommendation.createMany({ data: recommendations });
+  return await prisma.recommendation.createMany({ data: recommendations });
 }
 
 const recommendationFactory = {
