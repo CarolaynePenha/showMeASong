@@ -20,6 +20,28 @@ describe("recommendation service unit test suite", () => {
     await recommendationService.insert(createRecommendationData);
     expect(recommendationRepository.create).toHaveBeenCalled();
   });
+  it("throw conflict error", async () => {
+    jest
+      .spyOn(recommendationRepository, "findByName")
+      .mockImplementationOnce((): any => {
+        const recommendation = {
+          id: 2,
+          name: "music",
+          youtubeLink: "link",
+          score: 2,
+        };
+        return recommendation;
+      });
+    const createRecommendationData = {
+      name: faker.music.songName(),
+      youtubeLink: "https://www.youtube.com/watch?v=GrKQvyXpNgc",
+    };
+    const promise = recommendationService.insert(createRecommendationData);
+    expect(promise).rejects.toEqual({
+      message: "Recommendations names must be unique",
+      type: "conflict",
+    });
+  });
   it("the updateScore function should be called", async () => {
     jest
       .spyOn(recommendationRepository, "find")
@@ -37,5 +59,15 @@ describe("recommendation service unit test suite", () => {
       .mockImplementationOnce((): any => {});
     await recommendationService.upvote(2);
     expect(recommendationRepository.updateScore).toHaveBeenCalled();
+  });
+  it("throw not found error", async () => {
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {
+        null;
+      });
+    jest;
+    const promise = recommendationService.upvote(2);
+    expect(promise).rejects.toEqual({ type: "not_found", message: "" });
   });
 });
