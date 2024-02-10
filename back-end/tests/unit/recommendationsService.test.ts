@@ -20,4 +20,22 @@ describe("recommendation service unit test suite", () => {
     await recommendationService.insert(createRecommendationData);
     expect(recommendationRepository.create).toHaveBeenCalled();
   });
+  it("the updateScore function should be called", async () => {
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {
+        const recommendation = {
+          id: 2,
+          name: "music",
+          youtubeLink: "link",
+          score: 5,
+        };
+        return recommendation;
+      });
+    jest
+      .spyOn(recommendationRepository, "updateScore")
+      .mockImplementationOnce((): any => {});
+    await recommendationService.upvote(2);
+    expect(recommendationRepository.updateScore).toHaveBeenCalled();
+  });
 });
