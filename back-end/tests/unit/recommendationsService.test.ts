@@ -127,4 +127,20 @@ describe("recommendation service unit test suite", () => {
     await recommendationService.downvote(2);
     expect(recommendationRepository.remove).toHaveBeenCalled();
   });
+
+  it("the getAmountByScore function should be called", async () => {
+    jest
+      .spyOn(recommendationRepository, "getAmountByScore")
+      .mockImplementationOnce((): any => {});
+    await recommendationService.getTop(10);
+    expect(recommendationRepository.getAmountByScore).toHaveBeenCalled();
+  });
+
+  it("the findAll function should be called", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {});
+    await recommendationService.get();
+    expect(recommendationRepository.findAll).toHaveBeenCalled();
+  });
 });
