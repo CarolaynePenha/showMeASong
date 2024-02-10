@@ -66,11 +66,13 @@ async function getByScore(scoreFilter: "gt" | "lte") {
     score: 10,
     scoreFilter,
   });
+  console.log("recommendations", recommendations);
 
   if (recommendations.length > 0) {
+    console.log("entrei");
     return recommendations;
   }
-
+  console.log("recommendations", recommendations);
   return recommendationRepository.findAll();
 }
 

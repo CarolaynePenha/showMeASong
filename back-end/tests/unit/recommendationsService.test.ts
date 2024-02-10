@@ -4,7 +4,7 @@ import { recommendationService } from "./../../src/services/recommendationsServi
 import { jest } from "@jest/globals";
 
 describe("recommendation service unit test suite", () => {
-  it("the create function should be called, increment", async () => {
+  it("insert function should call create function", async () => {
     jest
       .spyOn(recommendationRepository, "findByName")
       .mockImplementationOnce((): any => {
@@ -20,7 +20,7 @@ describe("recommendation service unit test suite", () => {
     await recommendationService.insert(createRecommendationData);
     expect(recommendationRepository.create).toHaveBeenCalled();
   });
-  it("throw conflict error", async () => {
+  it(" insert function should throw conflict error", async () => {
     jest
       .spyOn(recommendationRepository, "findByName")
       .mockImplementationOnce((): any => {
@@ -43,7 +43,7 @@ describe("recommendation service unit test suite", () => {
     });
   });
 
-  it("the updateScore function should be called", async () => {
+  it("the updateScore function should be called, increment", async () => {
     jest
       .spyOn(recommendationRepository, "find")
       .mockImplementationOnce((): any => {
@@ -61,7 +61,7 @@ describe("recommendation service unit test suite", () => {
     await recommendationService.upvote(2);
     expect(recommendationRepository.updateScore).toHaveBeenCalled();
   });
-  it("throw not found error", async () => {
+  it(" upvote should throw not found error", async () => {
     jest
       .spyOn(recommendationRepository, "find")
       .mockImplementationOnce((): any => {
@@ -128,6 +128,14 @@ describe("recommendation service unit test suite", () => {
     expect(recommendationRepository.remove).toHaveBeenCalled();
   });
 
+  it("the get function should call findAll function", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {});
+    await recommendationService.get();
+    expect(recommendationRepository.findAll).toHaveBeenCalled();
+  });
+
   it("the getAmountByScore function should be called", async () => {
     jest
       .spyOn(recommendationRepository, "getAmountByScore")
@@ -136,11 +144,53 @@ describe("recommendation service unit test suite", () => {
     expect(recommendationRepository.getAmountByScore).toHaveBeenCalled();
   });
 
-  it("the findAll function should be called", async () => {
+  it("the getRandom function should return recommendations", async () => {
     jest
       .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        const recommendation = [
+          {
+            id: 2,
+            name: "music",
+            youtubeLink: "link",
+            score: -5,
+          },
+          {
+            id: 8,
+            name: "music",
+            youtubeLink: "link",
+            score: 2,
+          },
+        ];
+        return recommendation;
+      });
+    const recommendation = await recommendationService.getRandom();
+    expect(recommendation).resolves;
+  });
+  it("the getRandom function should return notFoundError", async () => {
+    const mockFunction = (): any => {
+      const recommendation = [];
+      return recommendation;
+    };
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        const recommendation = [];
+        return recommendation;
+      })
+      .mockImplementationOnce((): any => {
+        const recommendation = [];
+        return recommendation;
+      });
+    const promise = recommendationService.getRandom();
+    expect(promise).rejects.toEqual({ type: "not_found", message: "" });
+  });
+
+  it("deleteAll function should be called", async () => {
+    jest
+      .spyOn(recommendationRepository, "deleteAll")
       .mockImplementationOnce((): any => {});
-    await recommendationService.get();
-    expect(recommendationRepository.findAll).toHaveBeenCalled();
+    await recommendationService.deleteAll();
+    expect(recommendationRepository.deleteAll).toHaveBeenCalled();
   });
 });
