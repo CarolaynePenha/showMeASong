@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import recommendationFactory from "./factories/recommendationFactory.js";
-import app from "../src/app.js";
-import { prisma } from "../src/database.js";
+import app from "../../src/app.js";
+import { prisma } from "../../src/database.js";
 import { faker } from "@faker-js/faker";
 
 export default function postRoutersTestes() {
