@@ -61,7 +61,7 @@ describe("recommendation service unit test suite", () => {
     await recommendationService.upvote(2);
     expect(recommendationRepository.updateScore).toHaveBeenCalled();
   });
-  it(" upvote should throw not found error", async () => {
+  it("upvote function should throw not found error", async () => {
     jest
       .spyOn(recommendationRepository, "find")
       .mockImplementationOnce((): any => {
@@ -144,7 +144,7 @@ describe("recommendation service unit test suite", () => {
     expect(recommendationRepository.getAmountByScore).toHaveBeenCalled();
   });
 
-  it("the getRandom function should return recommendations", async () => {
+  it("the getRandom function should return recommendations, random equal to 0.7", async () => {
     jest
       .spyOn(recommendationRepository, "findAll")
       .mockImplementationOnce((): any => {
@@ -164,14 +164,35 @@ describe("recommendation service unit test suite", () => {
         ];
         return recommendation;
       });
+    jest.spyOn(Math, "random").mockReturnValueOnce(0.7);
+    const recommendation = await recommendationService.getRandom();
+    expect(recommendation).resolves;
+  });
+  it("the getRandom function should return recommendations, random equal to 0.5", async () => {
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        const recommendation = [
+          {
+            id: 2,
+            name: "music",
+            youtubeLink: "link",
+            score: -5,
+          },
+          {
+            id: 8,
+            name: "music",
+            youtubeLink: "link",
+            score: 2,
+          },
+        ];
+        return recommendation;
+      });
+    jest.spyOn(Math, "random").mockReturnValueOnce(0.5);
     const recommendation = await recommendationService.getRandom();
     expect(recommendation).resolves;
   });
   it("the getRandom function should return notFoundError", async () => {
-    const mockFunction = (): any => {
-      const recommendation = [];
-      return recommendation;
-    };
     jest
       .spyOn(recommendationRepository, "findAll")
       .mockImplementationOnce((): any => {
