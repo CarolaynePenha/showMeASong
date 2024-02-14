@@ -4,6 +4,10 @@ import { recommendationService } from "./../../src/services/recommendationsServi
 import { jest } from "@jest/globals";
 
 describe("recommendation service unit test suite", () => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
   it("insert function should call create function", async () => {
     jest
       .spyOn(recommendationRepository, "findByName")

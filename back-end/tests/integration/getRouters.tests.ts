@@ -59,7 +59,7 @@ export default function getRoutersTests() {
     });
 
     it("given a non-existent  id, returns 404", async () => {
-      const response = await supertest(app).get(`/recommendations/500`);
+      const response = await supertest(app).get(`/recommendations/58750`);
       expect(response.status).toBe(404);
     });
   });
